@@ -17,12 +17,6 @@ from source.exception import CustomException
 from source.logger import logging
 from source.utils import save_object, evaluate_models
 
-print("File loaded successfully")
-print("Defined members:", dir())
-print("model_trainer.py loaded successfully")
-print("Available members:", dir())
-print("model_trainer.py loaded")
-
 
 @dataclass
 class ModelTrainerConfig:
@@ -45,6 +39,7 @@ class ModelTrainer:
                 test_array[:, -1],
             )
 
+            # Define models
             models = {
                 "Random Forest": RandomForestRegressor(),
                 "Decision Tree": DecisionTreeRegressor(),
@@ -55,6 +50,36 @@ class ModelTrainer:
                 "Adaboost Regressor": AdaBoostRegressor(),
             }
 
+            # Define hyperparameters
+            params= {
+                "Decision Tree": {
+                    'criterion': ['squared_error', 'friedman_mse', 'absolute_error', 'poisson'],
+                },
+                "Random Forest": {
+                    'n_estimators': [8, 16, 32, 64, 128, 256]
+                },
+                "Gradient Boosting": {
+                    'learning_rate': [0.1, 0.01, 0.05, 0.001],
+                    'n_estimators': [8, 16, 32, 64, 128, 256]
+                },
+                "Linear Regression": {},
+                "K-Neighbors Regressor": {  # Fixed key name
+                    'n_neighbors': [5, 7, 9, 11],
+                },
+                "XGBRegressor": {
+                    'learning_rate': [0.1, 0.01, 0.05, 0.001],
+                    'n_estimators': [8, 16, 32, 64, 128, 256]
+                },
+                "CatBoosting Regressor": {
+                    'depth': [6, 8, 10],
+                    'iterations': [30, 50, 100]
+                },
+                "AdaBoost Regressor": {
+                    'learning_rate': [0.1, 0.01, 0.5, 0.001],
+                    'n_estimators': [8, 16, 32, 64, 128, 256]
+                },
+            }
+
             # Evaluate models
             model_report: dict = evaluate_models(
                 x_train=x_train,
@@ -62,6 +87,7 @@ class ModelTrainer:
                 x_test=x_test,
                 y_test=y_test,
                 models=models,
+                param=params,
             )
 
             # Get the best model score and name
